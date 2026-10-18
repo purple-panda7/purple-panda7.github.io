@@ -48,19 +48,59 @@
     }
     .subtitle { margin: 3px 0 18px; color: #606060; font-size: 14px; }
     .description { max-width: 690px; margin: 0 0 19px; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px; margin: 0 0 18px; }
     .project-image {
-      margin: 10px 0 22px;
+      margin: 0 0 22px;
+    }
+    .project-image a {
+      display: inline-block;
+      cursor: zoom-in;
     }
     .project-image img {
       display: block;
       width: 100%;
-      max-width: 760px;
+      max-width: 280px;
       height: auto;
       border: 1px solid #e6e6e6;
       border-radius: 6px;
       background: #fff;
     }
-    .links { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px; }
+    .screenshot-dialog {
+      position: fixed;
+      box-sizing: border-box;
+      width: max-content;
+      max-width: 96vw;
+      max-height: 96vh;
+      margin: auto;
+      padding: 48px 16px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 12px 45px rgb(0 0 0 / 0.2);
+    }
+    .screenshot-dialog::backdrop { background: rgb(0 0 0 / 0.72); }
+    .screenshot-dialog img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(96vh - 64px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+    .screenshot-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: transparent;
+      color: #333;
+      border: 0;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 28px;
+      cursor: pointer;
+    }
+    .screenshot-close:hover { background: #eee; }
+    .screenshot-close:focus-visible { outline: 2px solid #305d82; }
     @media (max-width: 600px) {
       .container { padding: 0 21px; }
       header .container { min-height: 62px; }
@@ -93,14 +133,40 @@
         expansion tube calculations, with equilibrium thermochemical properties
         evaluated using NASA CEA.
       </p>
-      <div class="project-image">
-        <img src="esta-screenshot.png" alt="Screenshot of the ESTA interface showing the Reflected Shock Tube mode.">
-      </div>
       <div class="links">
         <a href="https://github.com/purple-panda7/purple-panda7.github.io/releases/download/ESTA_v1.1/ESTA_v1.1.zip">Download ESTA for Windows &rarr;</a>
+      </div>
+      <div class="project-image">
+        <a href="esta-screenshot.png" id="screenshot-trigger" aria-label="Enlarge the ESTA screenshot">
+          <img src="esta-screenshot.png" alt="Screenshot of the ESTA interface showing the Reflected Shock Tube mode.">
+        </a>
       </div>
     </section>
   </main>
 
+  <dialog class="screenshot-dialog" id="screenshot-dialog" aria-label="Enlarged ESTA screenshot">
+    <button type="button" class="screenshot-close" id="screenshot-close" aria-label="Close screenshot">&times;</button>
+    <img src="esta-screenshot.png" alt="ESTA application showing the Reflected Shock Tube interface.">
+  </dialog>
+  <script>
+    const screenshotTrigger = document.getElementById('screenshot-trigger');
+    const screenshotDialog = document.getElementById('screenshot-dialog');
+    const screenshotClose = document.getElementById('screenshot-close');
+
+    screenshotTrigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      screenshotDialog.showModal();
+    });
+    screenshotClose.addEventListener('click', () => screenshotDialog.close());
+    screenshotDialog.addEventListener('click', (event) => {
+      if (event.target === screenshotDialog) {
+        const bounds = screenshotDialog.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right ||
+            event.clientY < bounds.top || event.clientY > bounds.bottom) {
+          screenshotDialog.close();
+        }
+      }
+    });
+  </script>
 </body>
 </html>
